@@ -1,12 +1,12 @@
 from apscheduler.schedulers.background import BlockingScheduler
 from datetime import datetime
-from barstatus import barstatus
-from bspccontrol import bspccontrol
+from barstatus import BarStatus
+from bspccontrol import BspcControl
 from threading import Thread
 import subprocess
 #subprocess.call(["free", "-m | grep Mem | awk '{printf \"%3.1f\", $3 / $2 * 100}'"])
 
-bar = barstatus()
+bar = BarStatus()
 
 def getmemory():
     ps = subprocess.Popen(('free', '-m'), stdout=subprocess.PIPE)
@@ -24,7 +24,7 @@ scheduler.configure(timezone='Europe/Amsterdam')
 scheduler.add_job(getmemory, 'interval', seconds=2)
 
 #Start continious jobs
-bspccontrol = bspccontrol(bar)
+bspccontrol = BspcControl(bar)
 Thread(target=bspccontrol.inputhandler).start()
 
 #Start scheduler

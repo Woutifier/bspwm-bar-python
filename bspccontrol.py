@@ -1,6 +1,6 @@
 import subprocess
 
-class bspccontrol:
+class BspcControl:
     def __init__(self, bar):
         self.bar = bar
         self.bspc = subprocess.Popen(('bspc', 'control', '--subscribe'), stdout=subprocess.PIPE)
@@ -17,12 +17,12 @@ class bspccontrol:
         ismonitor = True
         for item in split:
             if ismonitor:
-                self.monitors.append(monitor(item))
+                self.monitors.append(Monitor(item))
                 ismonitor = False
             elif item == 'LT':
                 ismonitor = True
             else:
-                self.monitors[-1].add_desktop(desktop(item[1:], item[:1]))
+                self.monitors[-1].add_desktop(Desktop(item[1:], item[:1]))
         self.outputbar()
     
     def outputbar(self):
@@ -31,7 +31,7 @@ class bspccontrol:
     def __str__(self):
         return 'test'
         
-class monitor:
+class Monitor:
     def __init__(self, name):
         self.name = name
         self.desktops = []
@@ -45,7 +45,7 @@ class monitor:
             returnstring += str(desktop) + '\n'
         return returnstring
     
-class desktop:
+class Desktop:
     def __init__(self, name, status):
         self.name = name
         if status == 'F':

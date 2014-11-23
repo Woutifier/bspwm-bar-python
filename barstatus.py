@@ -1,6 +1,6 @@
 import subprocess
 
-class barstatus:
+class BarStatus:
     COLOR_FOREGROUND = '#FFA3A6AB'
     COLOR_BACKGROUND = '#FF34322E'
     COLOR_ACTIVE_MONITOR_FG = '#FF34322E'
@@ -27,7 +27,7 @@ class barstatus:
     COLOR_STATUS_BG = '#FF34322E'
     
     def __init__(self):
-        self.bar = subprocess.Popen(('bar', '-p', '-g', 'x20', '-f', '-*-terminus-medium-r-normal-*-*-*-*-*-*-*-*-*', '-F', barstatus.COLOR_FOREGROUND, '-B', barstatus.COLOR_BACKGROUND), stdin=subprocess.PIPE)
+        self.bar = subprocess.Popen(('bar', '-p', '-g', 'x20', '-f', '-*-terminus-medium-r-normal-*-*-*-*-*-*-*-*-*', '-F', BarStatus.COLOR_FOREGROUND, '-B', BarStatus.COLOR_BACKGROUND), stdin=subprocess.PIPE)
         self.memory = 'Unset'
         self.monitorline = 'Unset'
         print("Bar initialized")
@@ -50,23 +50,23 @@ class barstatus:
         self.monitorline = ''
         for monitor in monitors:
             if True:
-                self.monitorline += str(Text(' ' + monitor.name + ' ', fgcolor=barstatus.COLOR_ACTIVE_MONITOR_FG, bgcolor=barstatus.COLOR_ACTIVE_MONITOR_BG))
+                self.monitorline += str(FormattedText(' ' + monitor.name + ' ', fgcolor=BarStatus.COLOR_ACTIVE_MONITOR_FG, bgcolor=BarStatus.COLOR_ACTIVE_MONITOR_BG))
             for desktop in monitor.desktops:
-                text = Text(' ' + desktop.name + ' ')
+                text = FormattedText(' ' + desktop.name + ' ')
                 if desktop.active and desktop.used:
-                    text.fgcolor = barstatus.COLOR_FOCUSED_OCCUPIED_FG
-                    text.bgcolor = barstatus.COLOR_FOCUSED_OCCUPIED_BG
-                    text.ucolor = barstatus.COLOR_FOCUSED_OCCUPIED_FG
+                    text.fgcolor = BarStatus.COLOR_FOCUSED_OCCUPIED_FG
+                    text.bgcolor = BarStatus.COLOR_FOCUSED_OCCUPIED_BG
+                    text.ucolor = BarStatus.COLOR_FOCUSED_OCCUPIED_FG
                 elif desktop.active:
-                    text.fgcolor = barstatus.COLOR_FOCUSED_FREE_FG
-                    text.bgcolor = barstatus.COLOR_FOCUSED_FREE_BG
-                    text.ucolor = barstatus.COLOR_FOCUSED_FREE_FG
+                    text.fgcolor = BarStatus.COLOR_FOCUSED_FREE_FG
+                    text.bgcolor = BarStatus.COLOR_FOCUSED_FREE_BG
+                    text.ucolor = BarStatus.COLOR_FOCUSED_FREE_FG
                 elif desktop.used:
-                    text.fgcolor = barstatus.COLOR_OCCUPIED_FG
+                    text.fgcolor = BarStatus.COLOR_OCCUPIED_FG
                 self.monitorline += str(text)
         self.refresh()
         
-class Text:
+class FormattedText:
     def __init__(self, text, fgcolor=None, bgcolor=None, ucolor=None):
         self.text = text
         self.fgcolor = fgcolor
