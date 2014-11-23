@@ -28,12 +28,15 @@ class BarStatus:
     
     def __init__(self):
         self.bar = subprocess.Popen(('bar', '-p', '-g', 'x20', '-f', '-*-terminus-medium-r-normal-*-*-*-*-*-*-*-*-*', '-F', BarStatus.COLOR_FOREGROUND, '-B', BarStatus.COLOR_BACKGROUND), stdin=subprocess.PIPE)
-        self.memory = 'Unset'
-        self.monitorline = 'Unset'
+        self.memory = ''
+        self.monitorline = ''
+        self.time = ''
+        self.battery = ''
+        self.ip = 'None'
         print("Bar initialized")
     
     def refresh(self):
-        output = '%{l}' + self.monitorline + '%{r}Mem: ' + self.memory + '%%\n'
+        output = '%{l}' + self.monitorline + '%{r}IP: ' + self.ip + '  Bat: ' + self.battery + '%%  Mem: ' + self.memory + '%%  ' + self.time + '\n'
         self.bar.stdin.write(output.encode('ascii'))
         self.bar.stdin.flush()
         
@@ -44,6 +47,14 @@ class BarStatus:
         self.memory = usage
         if dorefresh:
             self.refresh()
+            
+    def settime(self, time):
+        self.time = time
+        self.refresh()
+    
+    def setbattery(self, battery):
+        self.battery = battery
+        self.refresh()
             
     def setmonitors(self, monitors):
         self.monitors = monitors
