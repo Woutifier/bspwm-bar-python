@@ -13,17 +13,17 @@ def getmemory():
     ps2 = subprocess.Popen(('grep', 'Mem'), stdin=ps.stdout, stdout=subprocess.PIPE)
     output = subprocess.check_output(('awk', '{printf \"%3.1f\", $3 / $2 * 100}'), stdin=ps2.stdout)
     ps2.wait()
-    bar.setmemory(output.decode('ascii'))
+    bar.memory = output.decode('ascii')
     
 def getcurrenttime():
     current_time = strftime("%a %m %b %H:%M")
-    bar.settime(current_time)
+    bar.time = current_time
     
 def getbattery():
     output = subprocess.check_output(('acpi')).decode('ascii')
     if 'Battery' in output:
-        percentage = output.split(' ')[3].replace("%", "").replace(",", "")
-        bar.setbattery(percentage)
+        percentage = output.split(' ')[3].replace("%", "").replace(",", "").strip()
+        bar.battery = percentage
     
     
 #Configure scheduler

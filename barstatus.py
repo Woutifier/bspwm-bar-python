@@ -25,43 +25,61 @@ class BarStatus:
     COLOR_TITLE_BG = '#FF34322E'
     COLOR_STATUS_FG = '#FFA3A6AB'
     COLOR_STATUS_BG = '#FF34322E'
+    COLOR_RED = '#FFFF0000'
     
     def __init__(self):
         self.bar = subprocess.Popen(('bar', '-p', '-g', 'x20', '-f', '-*-terminus-medium-r-normal-*-*-*-*-*-*-*-*-*', '-F', BarStatus.COLOR_FOREGROUND, '-B', BarStatus.COLOR_BACKGROUND), stdin=subprocess.PIPE)
-        self.memory = ''
+        self._memory = ''
         self.monitorline = ''
-        self.time = ''
-        self.battery = ''
-        self.ip = 'None'
+        self._time = ''
+        self._battery = ''
+        self._ip = 'None'
         print("Bar initialized")
     
     def refresh(self):
-        output = '%{l}' + self.monitorline + '%{r}IP: ' + self.ip + '  Bat: ' + self.battery + '%%  Mem: ' + self.memory + '%%  ' + self.time + '\n'
+        output = '%{l}' + self.monitorline + '%{r}' + str(FormattedText('IP: ', fgcolor=BarStatus.COLOR_RED)) + self._ip + '  ' + str(FormattedText('Bat: ', fgcolor=BarStatus.COLOR_RED)) + self._battery + '%%  ' + str(FormattedText('Mem: ', fgcolor=BarStatus.COLOR_RED)) + self.memory + '%%  ' + self._time + '\n'
         self.bar.stdin.write(output.encode('ascii'))
         self.bar.stdin.flush()
-        
-    def setmemory(self, usage):
+    
+    @property
+    def memory(self):
+        return self._memory
+    
+    @memory.setter
+    def memory(self, usage):
         dorefresh = False
-        if self.memory != usage:
+        if self._memory != usage:
             dorefresh = True
-        self.memory = usage
+        self._memory = usage
         if dorefresh:
             self.refresh()
             
-    def settime(self, time):
-        self.time = time
-        self.refresh()
+    @property
+    def time(self):
+        return self._time
     
-    def setbattery(self, battery):
-        self.battery = battery
+    @time.setter
+    def time(self, time):
+        self._time = time
+        self.refresh()
+        
+    @property
+    def battery(self):
+        return self._battery
+    
+    @battery.setter
+    def battery(self, battery):
+        self._battery = battery
         self.refresh()
             
     def setmonitors(self, monitors):
         self.monitors = monitors
         self.monitorline = ''
+        index = 0
         for monitor in monitors:
             if True:
-                self.monitorline += str(FormattedText(' ' + monitor.name + ' ', fgcolor=BarStatus.COLOR_ACTIVE_MONITOR_FG, bgcolor=BarStatus.COLOR_ACTIVE_MONITOR_BG))
+                self.monitorline += '%{S' + str(index) + '}' + str(FormattedText(' ' + monitor.name + ' ', fgcolor=BarStatus.COLOR_ACTIVE_MONITOR_FG, bgcolor=BarStatus.COLOR_ACTIVE_MONITOR_BG))
+                index += 1
             for desktop in monitor.desktops:
                 text = FormattedText(' ' + desktop.name + ' ')
                 if desktop.active and desktop.used:
@@ -75,6 +93,7 @@ class BarStatus:
                 elif desktop.used:
                     text.fgcolor = BarStatus.COLOR_OCCUPIED_FG
                 self.monitorline += str(text)
+        self.monitorline += '%{S0}'
         self.refresh()
         
 class FormattedText:
