@@ -28,7 +28,7 @@ class BarStatus:
     COLOR_RED = '#FFFF0000'
     
     def __init__(self):
-        self.bar = subprocess.Popen(('bar', '-p', '-g', 'x20', '-f', '-*-terminus-medium-r-normal-*-*-*-*-*-*-*-*-*', '-F', BarStatus.COLOR_FOREGROUND, '-B', BarStatus.COLOR_BACKGROUND), stdin=subprocess.PIPE)
+        self.bar = subprocess.Popen(('lemonbar', '-p', '-g', 'x20', '-f', '-*-terminus-medium-r-normal-*-*-*-*-*-*-*-*-*', '-F', BarStatus.COLOR_FOREGROUND, '-B', BarStatus.COLOR_BACKGROUND), stdin=subprocess.PIPE)
         self._memory = ''
         self.monitorline = ''
         self._time = ''
@@ -70,6 +70,15 @@ class BarStatus:
     @battery.setter
     def battery(self, battery):
         self._battery = battery
+        self.refresh()
+        
+    @property
+    def ip(self):
+        return self._ip
+    
+    @ip.setter
+    def ip(self, ip):
+        self._ip = ip
         self.refresh()
             
     def setmonitors(self, monitors):

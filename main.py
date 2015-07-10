@@ -3,6 +3,7 @@ from datetime import datetime
 from barstatus import BarStatus
 from bspccontrol import BspcControl
 from threading import Thread
+import re
 import subprocess
 from time import strftime
 
@@ -24,7 +25,14 @@ def getbattery():
     if 'Battery' in output:
         percentage = output.split(' ')[3].replace("%", "").replace(",", "").strip()
         bar.battery = percentage
-    
+        
+def getip():
+    cmd = subprocess.check_output(('ip', 'route')).decode('ascii')
+    match = re.search("src ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})", cmd)
+    if match:
+        bar.ip = match.group(1)
+    else:
+        bar.ip = "None"
     
 #Configure scheduler
 scheduler = BlockingScheduler()
@@ -34,6 +42,7 @@ scheduler.configure(timezone='Europe/Amsterdam')
 scheduler.add_job(getmemory, 'interval', seconds=2, next_run_time=datetime.now())
 scheduler.add_job(getcurrenttime, 'interval', seconds=1, next_run_time=datetime.now())
 scheduler.add_job(getbattery, 'interval', seconds=10, next_run_time=datetime.now())
+scheduler.add_job(getip, 'interval', seconds=10, next_run_time=datetime.now())
 
 #Start continious jobs
 bspccontrol = BspcControl(bar)
