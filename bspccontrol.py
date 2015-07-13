@@ -8,7 +8,7 @@ class BspcControl:
     
     def inputhandler(self):
         while True:
-            input = self.bspc.stdout.readline().decode('ascii').strip()[2:]
+            input = self.bspc.stdout.readline().decode('ascii').strip()[1:]
             self.monitors = []
             self.parseline(input)
     
@@ -17,9 +17,9 @@ class BspcControl:
         ismonitor = True
         for item in split:
             if ismonitor:
-                self.monitors.append(Monitor(item))
+                self.monitors.append(Monitor(item[1:], item[0:1]))
                 ismonitor = False
-            elif item == 'LT':
+            elif item.startswith('L'):
                 ismonitor = True
             else:
                 self.monitors[-1].add_desktop(Desktop(item[1:], item[:1]))
@@ -32,9 +32,10 @@ class BspcControl:
         return 'test'
         
 class Monitor:
-    def __init__(self, name):
+    def __init__(self, name, status):
         self.name = name
         self.desktops = []
+        print(status)
     
     def add_desktop(self, desktop):
         self.desktops.append(desktop)

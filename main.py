@@ -16,8 +16,12 @@ def getmemory():
     ps2.wait()
     bar.memory = output.decode('ascii')
     
+def getwindowtitle():
+    title = subprocess.check_output(('xdotool', 'getactivewindow', 'getwindowname')).decode('ascii').strip()
+    bar.title = title
+    
 def getcurrenttime():
-    current_time = strftime("%a %m %b %H:%M")
+    current_time = strftime("%a %d %b %H:%M")
     bar.time = current_time
     
 def getbattery():
@@ -43,6 +47,7 @@ scheduler.add_job(getmemory, 'interval', seconds=2, next_run_time=datetime.now()
 scheduler.add_job(getcurrenttime, 'interval', seconds=1, next_run_time=datetime.now())
 scheduler.add_job(getbattery, 'interval', seconds=10, next_run_time=datetime.now())
 scheduler.add_job(getip, 'interval', seconds=10, next_run_time=datetime.now())
+scheduler.add_job(getwindowtitle, 'interval', seconds=.5, next_run_time=datetime.now())
 
 #Start continious jobs
 bspccontrol = BspcControl(bar)

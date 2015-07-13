@@ -26,19 +26,21 @@ class BarStatus:
     COLOR_STATUS_FG = '#FFA3A6AB'
     COLOR_STATUS_BG = '#FF34322E'
     COLOR_RED = '#FFFF0000'
+    COLOR_WHITE = '#FFFFFF'
     
     def __init__(self):
-        self.bar = subprocess.Popen(('lemonbar', '-p', '-g', 'x20', '-f', '-*-terminus-medium-r-normal-*-*-*-*-*-*-*-*-*', '-F', BarStatus.COLOR_FOREGROUND, '-B', BarStatus.COLOR_BACKGROUND), stdin=subprocess.PIPE)
+        self.bar = subprocess.Popen(('lemonbar', '-p', '-g', 'x20', '-f', '-*-terminus-medium-r-normal-*-*-*-*-*-*-*-*-*', '-f', 'Icons:style=regular:pixelsize=13', '-F', BarStatus.COLOR_FOREGROUND, '-B', BarStatus.COLOR_BACKGROUND), stdin=subprocess.PIPE)
         self._memory = ''
         self.monitorline = ''
         self._time = ''
         self._battery = ''
         self._ip = 'None'
+        self._title = ''
         print("Bar initialized")
     
     def refresh(self):
-        output = '%{l}' + self.monitorline + '%{r}' + str(FormattedText('IP: ', fgcolor=BarStatus.COLOR_RED)) + self._ip + '  ' + str(FormattedText('Bat: ', fgcolor=BarStatus.COLOR_RED)) + self._battery + '%%  ' + str(FormattedText('Mem: ', fgcolor=BarStatus.COLOR_RED)) + self.memory + '%%  ' + self._time + '\n'
-        self.bar.stdin.write(output.encode('ascii'))
+        output = '%{l}' + self.monitorline + '%{c}' + str(FormattedText(self._title, fgcolor=BarStatus.COLOR_WHITE)) + '%{r}' + str(FormattedText('%{T2}\uF0EC%{T1} ', fgcolor=BarStatus.COLOR_RED)) + self._ip + '  ' + str(FormattedText('%{T2}\uF3CF%{T1} ', fgcolor=BarStatus.COLOR_RED)) + self._battery + '%%  ' + str(FormattedText('%{T2}\uF05A%{T1} ', fgcolor=BarStatus.COLOR_RED)) + self.memory + '%%  ' + str(FormattedText('%{T2}\uF073%{T1} ', fgcolor=BarStatus.COLOR_RED)) + self._time + '\n'
+        self.bar.stdin.write(output.encode('utf-8'))
         self.bar.stdin.flush()
     
     @property
@@ -61,6 +63,15 @@ class BarStatus:
     @time.setter
     def time(self, time):
         self._time = time
+        self.refresh()
+        
+    @property
+    def title(self):
+        return self._title
+    
+    @time.setter
+    def title(self, title):
+        self._title = title
         self.refresh()
         
     @property
@@ -87,7 +98,7 @@ class BarStatus:
         index = 0
         for monitor in monitors:
             if True:
-                self.monitorline += '%{S' + str(index) + '}' + str(FormattedText(' ' + monitor.name + ' ', fgcolor=BarStatus.COLOR_ACTIVE_MONITOR_FG, bgcolor=BarStatus.COLOR_ACTIVE_MONITOR_BG))
+                self.monitorline += '%{S' + str(index) + '}' + str(FormattedText(' %{T2}\uF108%{T1} ' + monitor.name + ' ', fgcolor=BarStatus.COLOR_ACTIVE_MONITOR_FG, bgcolor=BarStatus.COLOR_ACTIVE_MONITOR_BG))
                 index += 1
             for desktop in monitor.desktops:
                 text = FormattedText(' ' + desktop.name + ' ')
