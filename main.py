@@ -47,7 +47,7 @@ scheduler.add_job(getmemory, 'interval', seconds=2, next_run_time=datetime.now()
 scheduler.add_job(getcurrenttime, 'interval', seconds=1, next_run_time=datetime.now())
 scheduler.add_job(getbattery, 'interval', seconds=10, next_run_time=datetime.now())
 scheduler.add_job(getip, 'interval', seconds=10, next_run_time=datetime.now())
-scheduler.add_job(getwindowtitle, 'interval', seconds=.5, next_run_time=datetime.now())
+scheduler.add_job(getwindowtitle, 'interval', seconds=.1, next_run_time=datetime.now())
 
 #Start continious jobs
 bspccontrol = BspcControl(bar)
