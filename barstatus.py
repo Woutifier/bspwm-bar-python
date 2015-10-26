@@ -69,7 +69,7 @@ class BarStatus:
     def title(self):
         return self._title
     
-    @time.setter
+    @title.setter
     def title(self, title):
         self._title = title
         self.refresh()
