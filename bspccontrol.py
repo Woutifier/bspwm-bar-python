@@ -5,13 +5,13 @@ class BspcControl:
         self.bar = bar
         self.bspc = subprocess.Popen(('bspc', 'control', '--subscribe'), stdout=subprocess.PIPE)
         self.monitors = []
-    
+
     def inputhandler(self):
         while True:
             input = self.bspc.stdout.readline().decode('ascii').strip()[1:]
             self.monitors = []
             self.parseline(input)
-    
+
     def parseline(self,line):
         split = line.split(':')
         ismonitor = True
@@ -24,28 +24,28 @@ class BspcControl:
             else:
                 self.monitors[-1].add_desktop(Desktop(item[1:], item[:1]))
         self.outputbar()
-    
+
     def outputbar(self):
         self.bar.setmonitors(self.monitors)
-        
+
     def __str__(self):
-        return 'test'
-        
+        return 'Test'
+
 class Monitor:
     def __init__(self, name, status):
         self.name = name
         self.desktops = []
         print(status)
-    
+
     def add_desktop(self, desktop):
         self.desktops.append(desktop)
-        
+
     def __str__(self):
         returnstring = 'Monitor: ' + self.name + '\n'
         for desktop in self.desktops:
             returnstring += str(desktop) + '\n'
         return returnstring
-    
+
 class Desktop:
     def __init__(self, name, status):
         self.name = name
@@ -61,14 +61,12 @@ class Desktop:
         else:
             self.active = True
             self.used = True
-        
+
     def activate(self):
         self.active = True
-        
+
     def deactivate(self):
         self.active = False
-        
+
     def __str__(self):
         return self.name + ': ' + str(self.active) + ' ' + str(self.used)
-        
-        
